@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 
 public class SpotifySourceManager extends MirroringAudioSourceManager implements HttpConfigurable, AudioSearchManager {
 
-	public static final Pattern URL_PATTERN = Pattern.compile("(https?://)(www\\.)?open\\.spotify\\.com/((?<region>[a-zA-Z-]+)/)?(user/(?<user>[a-zA-Z0-9-_]+)/)?(?<type>track|album|playlist|artist)/(?<identifier>[a-zA-Z0-9-_]+)");
+	public static final Pattern URL_PATTERN = Pattern.compile("(https?://)(www\\.)?open\\.spotify\\.com/((?<region>[a-zA-Z-]+)/)?(user/(?<user>[a-zA-Z0-9-_]+)/)?(?<type>track|album|playlist|artist|episode)/(?<identifier>[a-zA-Z0-9-_]+)");
 	public static final String SEARCH_PREFIX = "spsearch:";
 	public static final String RECOMMENDATIONS_PREFIX = "sprec:";
 	public static final String PREVIEW_PREFIX = "spprev:";
@@ -168,7 +168,6 @@ public class SpotifySourceManager extends MirroringAudioSourceManager implements
 			}
 
 			var id = matcher.group("identifier");
-			log.info(matcher.group("type"));
 			switch (matcher.group("type")) {
 				case "album":
 					return this.getAlbum(id, preview);
