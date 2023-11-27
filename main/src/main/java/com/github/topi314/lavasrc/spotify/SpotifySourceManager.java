@@ -168,6 +168,7 @@ public class SpotifySourceManager extends MirroringAudioSourceManager implements
 			}
 
 			var id = matcher.group("identifier");
+			log.info(matcher.group("type"));
 			switch (matcher.group("type")) {
 				case "album":
 					return this.getAlbum(id, preview);
@@ -182,14 +183,11 @@ public class SpotifySourceManager extends MirroringAudioSourceManager implements
 					return this.getArtist(id, preview);
 
 				case "episode":
-					log.info("Episode");
 					return this.getEpisode(id, preview);
 			}
 		} catch (IOException e) {
-			log.info("error");
 			throw new RuntimeException(e);
 		}
-		log.info("null");
 		return null;
 	}
 
