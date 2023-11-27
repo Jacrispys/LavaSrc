@@ -182,11 +182,14 @@ public class SpotifySourceManager extends MirroringAudioSourceManager implements
 					return this.getArtist(id, preview);
 
 				case "episode":
+					log.info("Episode");
 					return this.getEpisode(id, preview);
 			}
 		} catch (IOException e) {
+			log.info("error");
 			throw new RuntimeException(e);
 		}
+		log.info("null");
 		return null;
 	}
 
