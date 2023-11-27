@@ -180,12 +180,16 @@ public class SpotifySourceManager extends MirroringAudioSourceManager implements
 
 				case "artist":
 					return this.getArtist(id, preview);
+
+				case "episode":
+					return this.getEpisode(id, preview);
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		return null;
 	}
+
 
 	public void requestToken() throws IOException {
 		var request = new HttpPost("https://accounts.spotify.com/api/token");
@@ -405,6 +409,15 @@ public class SpotifySourceManager extends MirroringAudioSourceManager implements
 		return this.parseTrack(json, preview);
 	}
 
+	public AudioItem getEpisode(String id, boolean preview) throws IOException {
+		var json = this.getJson(API_BASE + "episodes/" + id);
+		if (json == null) {
+			return AudioReference.NO_TRACK;
+		}
+
+		return this.parseEpisode(json, preview);
+	}
+
 	private List<AudioTrack> parseTracks(JsonBrowser json, boolean preview) {
 		var tracks = new ArrayList<AudioTrack>();
 		for (var value : json.get("tracks").values()) {
@@ -443,6 +456,26 @@ public class SpotifySourceManager extends MirroringAudioSourceManager implements
 			json.get("preview_url").text(),
 			preview,
 			this
+		);
+	}
+
+	public AudioItem parseEpisode(JsonBrowser json, boolean preview) {
+		return new SpotifyAudioTrack(
+				new AudioTrackInfo(
+						json.get("name").text(),
+						json.get("show").get("publisher").text(),
+						preview ? PREVIEW_LENGTH : json.get("duration_ms").asLong(0),
+						json.get("id").text(),
+						false,
+						json.get("external_urls").get("spotify").text()
+				),
+				json.get("show").get("name").text(),
+				json.get("show").get("external_urls").get("spotify").text(),
+				json.get("show").get("external_urls").get("spotify").text(),
+				json.get("images").index(0).get("url").text(),
+				json.get("audio_preview_url").text(),
+				preview,
+				this
 		);
 	}
 
